@@ -63,12 +63,11 @@ function buildPaymentRequest() {
   try {
     request = new PaymentRequest(supportedInstruments, details);
     if (request.canMakePayment) {
-      /*
       request.canMakePayment().then(function(result) {
         info(result ? "Can make payment" : "Cannot make payment");
       }).catch(function(err) {
         error(err);
-      });*/
+      });
     }
   } catch (e) {
     error('Developer mistake: \'' + e + '\'');
