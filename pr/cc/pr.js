@@ -109,7 +109,7 @@ function buildPaymentRequest() {
 function onBuyClicked() { // eslint-disable-line no-unused-vars
   var request = buildPaymentRequest();
   if (!window.PaymentRequest || !request) {
-    error('Round:' + Round + '-PaymentRequest API is not supported.');
+    error('Round:' + Round + '-PaymentRequest doesn\'t generate.');
     Round++;
     return;
   }
