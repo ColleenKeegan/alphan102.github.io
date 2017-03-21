@@ -7,6 +7,7 @@ var Round = 1;
 var supportedInstruments = [{}]; //[{supportedMethods:[]}];
 
 var details = {
+  id: '',
   total: {
     label: 'Donation',
     amount: {
@@ -113,7 +114,7 @@ function onBuyClicked() { // eslint-disable-line no-unused-vars
     return;
   }
   error('Round:' + Round + '-Got request object.');
-    /*
+
   try {
 
     request.show()
@@ -121,7 +122,14 @@ function onBuyClicked() { // eslint-disable-line no-unused-vars
         window.setTimeout(function() {
           instrumentResponse.complete('success')
             .then(function() {
-              done('Thank you!', instrumentResponse);
+              if (Round == 4) {
+                showResp(instrumentResponse);
+                Round++;
+                details.id = 'MozBill';
+                return;
+              } else {
+                done('See you next time!', instrumentResponse);
+              }
             })
             .catch(function(err) {
               error(err);
@@ -136,5 +144,5 @@ function onBuyClicked() { // eslint-disable-line no-unused-vars
   } catch (e) {
     error('Developer mistake: \'' + e + '\'');
     request = buildPaymentRequest();
-  }*/
+  }
 }

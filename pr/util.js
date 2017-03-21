@@ -65,6 +65,35 @@ function toDictionary(addr) {  // eslint-disable-line no-unused-vars
   return dict;
 }
 
+function showResp(resp) {  // eslint-disable-line no-unused-vars
+  if (resp.toJSON) {
+    info(JSON.stringify(resp, undefined, 2));
+    return;
+  }
+
+  let shippingOption = resp.shippingOption ?
+      'shipping, delivery, pickup option: ' + resp.shippingOption + '<br/>' :
+      '';
+
+  let shippingAddress = resp.shippingAddress ?
+      'shipping, delivery, pickup address: ' +
+          JSON.stringify(toDictionary(resp.shippingAddress), undefined, 2) +
+          '<br/>' :
+      '';
+
+  let instrument =
+      'instrument:' + JSON.stringify(resp.details, undefined, 2) + '<br/>';
+
+  let method = 'method: ' + resp.methodName + '<br/>';
+  let email = resp.payerEmail ? 'email: ' + resp.payerEmail + '<br/>' : '';
+  let phone = resp.payerPhone ? 'phone: ' + resp.payerPhone + '<br/>' : '';
+  let name = resp.payerName ? 'name: ' + resp.payerName + '<br/>' : '';
+
+
+  info(email + phone + name + shippingOption + shippingAddress + method +
+      instrument);
+}
+
 /**
  * Called when the payment request is complete.
  * @param {string} message - The human readable message to display.
