@@ -122,6 +122,7 @@ function onBuyClicked() { // eslint-disable-line no-unused-vars
         window.setTimeout(function() {
           instrumentResponse.complete('success')
             .then(function() {
+              info("[Payment Response]----");
               if (Round == 4) {
                 showResp(instrumentResponse);
                 Round++;
@@ -135,12 +136,28 @@ function onBuyClicked() { // eslint-disable-line no-unused-vars
               error(err);
               request = buildPaymentRequest();
             });
-        }, 2000);
+        }, 1000);
       })
       .catch(function(err) {
         error(err);
         request = buildPaymentRequest();
       });
+
+
+    /* For abort testing */
+    window.setTimeout(function() {
+      info("start Abort----");
+        if (request.abort) {
+          request.abort().then(function() {
+            info("Abort successfully");
+          }).catch(function(err) {
+            error(err);
+            info("Abort failed due to" + err);
+          });
+        }
+    }, 3000);
+
+
   } catch (e) {
     error('Developer mistake: \'' + e + '\'');
     request = buildPaymentRequest();
