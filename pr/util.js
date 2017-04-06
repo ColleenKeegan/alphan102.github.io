@@ -1,31 +1,20 @@
 var timeoutID1;
 var timeoutID2;
 
+
 /**
  * Prints the given error message.
  * @param {string} msg - The error message to print.
  */
-function error(msg) {  // eslint-disable-line no-unused-vars
-  if (timeoutID1) {
-    window.clearTimeout(timeoutID1);
-  }
-  if (timeoutID2) {
-    window.clearTimeout(timeoutID2);
-  }
+function error(msg) {
   let element = document.createElement('pre');
   element.innerHTML = msg;
   element.className = 'error';
   document.getElementById('msg').appendChild(element);
-  timeoutID1 = window.setTimeout(function() {
-    if (element.className !== 'error') {
-      return;
-    }
-    element.className = 'error-hide';
-    timeoutID2 = window.setTimeout(function() {
-      element.innerHTML = '';
-      element.className = '';
-    }, 500);
-  }, 10000);
+  window.setTimeout(function() {
+    element.innerHTML = '';
+    element.className = '';
+  }, 4000);
 }
 
 /**
@@ -37,6 +26,10 @@ function info(msg) {
   element.innerHTML = msg;
   element.className = 'info';
   document.getElementById('msg').appendChild(element);
+  window.setTimeout(function() {
+    element.innerHTML = '';
+    element.className = '';
+  }, 4000);
 }
 
 /**
@@ -99,34 +92,7 @@ function showResp(resp) {  // eslint-disable-line no-unused-vars
  * @param {string} message - The human readable message to display.
  * @param {PaymentResponse} resp - The payment response.
  */
-function done(message, resp) {  // eslint-disable-line no-unused-vars
+function done(message) {  // eslint-disable-line no-unused-vars
   let element = document.getElementById('contents');
   element.innerHTML = message;
-
-  if (resp.toJSON) {
-    info(JSON.stringify(resp, undefined, 2));
-    return;
-  }
-
-  let shippingOption = resp.shippingOption ?
-      'shipping, delivery, pickup option: ' + resp.shippingOption + '<br/>' :
-      '';
-
-  let shippingAddress = resp.shippingAddress ?
-      'shipping, delivery, pickup address: ' +
-          JSON.stringify(toDictionary(resp.shippingAddress), undefined, 2) +
-          '<br/>' :
-      '';
-
-  let instrument =
-      'instrument:' + JSON.stringify(resp.details, undefined, 2) + '<br/>';
-
-  let method = 'method: ' + resp.methodName + '<br/>';
-  let email = resp.payerEmail ? 'email: ' + resp.payerEmail + '<br/>' : '';
-  let phone = resp.payerPhone ? 'phone: ' + resp.payerPhone + '<br/>' : '';
-  let name = resp.payerName ? 'name: ' + resp.payerName + '<br/>' : '';
-
-
-  info(email + phone + name + shippingOption + shippingAddress + method +
-      instrument);
 }

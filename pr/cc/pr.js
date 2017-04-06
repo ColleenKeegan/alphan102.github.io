@@ -4,7 +4,11 @@
 
 var Round = 1;
 
-var supportedInstruments = [{}]; //[{supportedMethods:[]}];
+var supportedInstruments = [{
+  supportedMethods: [
+    'unionpay', 'visa', 'mastercard', 'amex', 'discover', 'diners', 'jcb'
+  ]
+}];
 
 var details = {
   id: '',
@@ -12,7 +16,7 @@ var details = {
     label: 'Donation',
     amount: {
       currency: 'USD',
-      value: '-55.00'
+      value: '55.00'
     }
   },
   displayItems: [{
@@ -25,7 +29,7 @@ var details = {
     label: 'Friends and family discount',
     amount: {
       currency: 'USD',
-      value: 'aaa10.00'
+      value: '10.00'
     }
   }],
   modifiers: [{
@@ -50,40 +54,50 @@ var details = {
   }]
 };
 
-
-/**
- * Initializes the payment request object.
- */
-function buildPaymentRequest() {
-  if (!window.PaymentRequest) {
-    return null;
+function preSetting() {
+  var change = document.getElementById("Round");
+  if (Round == 7) {
+    change.innerHTML = 'DONE';
+  } else {
+    var next = Round + 1;
+    change.innerHTML = 'Round' + next;
   }
 
-  var request = null;
-
-  try {
-    request = new PaymentRequest(supportedInstruments, details);
-    if (request.canMakePayment) {
-      request.canMakePayment().then(function(result) {
-        info(result ? "Can make payment" : "Cannot make payment");
-      }).catch(function(err) {
-        error(err);
-      });
-    }
-  } catch (e) {
-    error('Developer mistake: \'' + e + '\'');
-    if (Round == 1) {
+  switch (Round) {
+    case 1:
+      supportedInstruments = [{}];
+      break;
+    case 2:
       supportedInstruments = [{
         supportedMethods: [
           'unionpay', 'visa', 'mastercard', 'amex', 'discover', 'diners', 'jcb'
         ]
       }];
-    } else if (Round == 2) {
+      details.total.amount = {
+        currency: 'USD',
+        value: '-55.00'
+      };
+      break;
+    case 3:
       details.total.amount = {
         currency: 'USD',
         value: '55.00'
       };
-    } else if(Round == 3) {
+      details.displayItems = [{
+        label: 'Original donation amount',
+        amount: {
+          currency: 'USD',
+          value: '-aa65.00'
+        }
+      }, {
+        label: 'Friends and family discount',
+        amount: {
+          currency: 'USD',
+          value: '10.00'
+        }
+      }];
+      break;
+    case 4:
       details.displayItems = [{
         label: 'Original donation amount',
         amount: {
@@ -97,7 +111,41 @@ function buildPaymentRequest() {
           value: '10.00'
         }
       }];
-    }
+      info('Round ' + Round + ': Got PaymentRequest and try abort() before show()');
+      break;
+    case 5:
+      info('Round ' + Round + ': Got PaymentRequest and try canMakePayment()');
+      break;
+    case 6:
+      info('Round ' + Round + ': Got PaymentRequest and try show() without detail.id');
+      break;
+    case 7:
+      details.id = 'MozBill';
+      info('Round ' + Round + ': Got PaymentRequest and try show() with detail.id');
+      break;
+    default:
+      done('See you next time!');
+      retrun;
+  }
+}
+
+/**
+ * Initializes the payment request object.
+ */
+function buildPaymentRequest() {
+  if (!window.PaymentRequest) {
+    return null;
+  }
+  preSetting();
+
+  var request = null;
+
+  try {
+    request = new PaymentRequest(supportedInstruments, details);
+  } catch (e) {
+    info('Round ' + Round + ': PaymentRequest cann\'t be generated.');
+    error(' Reason: \'' + e + '\'');
+    Round++;
   }
 
   return request;
@@ -106,31 +154,44 @@ function buildPaymentRequest() {
 /**
  * Launches payment request for credit cards.
  */
-function onBuyClicked() { // eslint-disable-line no-unused-vars
+function onBuyClicked() {
   var request = buildPaymentRequest();
   if (!window.PaymentRequest || !request) {
-    error('Round:' + Round + '-PaymentRequest doesn\'t generate.');
-    Round++;
     return;
   }
-  error('Round:' + Round + '-Got request object.');
 
   try {
+    if (Round == 4) {
+      request.abort().then(function() {
+        info("Abort successfully");
+      }).catch(function(err) {
+        error("Abort failed due to" + err);
+      });
+      Round++;
+      return;
+    }
+
+    if (Round == 5) {
+      if (request.canMakePayment) {
+        request.canMakePayment().then(function(result) {
+          error(result ? "Result: Can make payment" : "Result: Cannot make payment");
+        }).catch(function(err) {
+          error(err);
+        });
+      Round++;
+      return;
+      }
+    }
 
     request.show()
       .then(function(instrumentResponse) {
         window.setTimeout(function() {
           instrumentResponse.complete('success')
             .then(function() {
-              info("[Payment Response]----");
-              if (Round == 4) {
-                showResp(instrumentResponse);
-                Round++;
-                details.id = 'MozBill';
-                return;
-              } else {
-                done('See you next time!', instrumentResponse);
-              }
+              error("[Payment Response]----");
+              showResp(instrumentResponse);
+              Round++;
+              return;
             })
             .catch(function(err) {
               error(err);
@@ -142,24 +203,9 @@ function onBuyClicked() { // eslint-disable-line no-unused-vars
         error(err);
         request = buildPaymentRequest();
       });
-
-
-    /* For abort testing */
-    window.setTimeout(function() {
-      info("start Abort----");
-        if (request.abort) {
-          request.abort().then(function() {
-            info("Abort successfully");
-          }).catch(function(err) {
-            error(err);
-            info("Abort failed due to" + err);
-          });
-        }
-    }, 3000);
-
-
   } catch (e) {
     error('Developer mistake: \'' + e + '\'');
     request = buildPaymentRequest();
+    return Round;
   }
 }

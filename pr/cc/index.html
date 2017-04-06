@@ -12,8 +12,21 @@
     <h1>Credit Card Test</h1>
     <p>This page can be used to test credit card payments.
     No payment will be processed.</p>
-    <p>Price: USD <strong>$55.00</strong></p>
-    <p><button onclick="onBuyClicked()">Buy</button></p>
+    <p> Round 1 - At least one payment method is needed.
+    <a href="https://github.com/alphan102/alphan102.github.io/blob/master/pr/cc/pr.js#L68">Source link</a></p>
+    <p> Round 2 - details.total.amount.value should be a valid and positive decimal value.
+    <a href="https://github.com/alphan102/alphan102.github.io/blob/master/pr/cc/pr.js#L78">Source link</a></p>
+    <p> Round 3 - For each item in details.displayItems, item.amount.value should be a valid decimal value.
+    <a href="https://github.com/alphan102/alphan102.github.io/blob/master/pr/cc/pr.js#L90">Source link</a></p>
+    <p> Round 4 - call request.abort() before calling request.show().
+    <a href="https://github.com/alphan102/alphan102.github.io/blob/master/pr/cc/pr.js#L165">Source link</a></p>
+    <p> Round 5 - Test request.canMakePayment().
+    <a href="https://github.com/alphan102/alphan102.github.io/blob/master/pr/cc/pr.js#L176">Source link</a></p>
+    <p> Round 6 - if there is no id in details, user agent should generate an id for this request. (Test show flow and got response)
+    <a href="https://github.com/alphan102/alphan102.github.io/blob/master/pr/cc/pr.js#L186">Source link</a></p>
+    <p> Round 7 - if there is id in details, user agent should use this id to generate a response. (Test show flow and got response)
+    <a href="https://github.com/alphan102/alphan102.github.io/blob/master/pr/cc/pr.js#L123">Source link</a></p>
+    <p><button type="button" id="Round" onclick="onBuyClicked()">Round1</button></p>
   </div>
   <pre id="msg"></pre>
   <script src="../util.js"></script>
