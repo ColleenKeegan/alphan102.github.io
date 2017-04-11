@@ -134,6 +134,7 @@ function preSetting() {
  */
 function buildPaymentRequest() {
   if (!window.PaymentRequest) {
+    done('Your browser doesn\'t support PaymentRequest API!');
     return null;
   }
   preSetting();
