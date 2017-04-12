@@ -1,6 +1,21 @@
 var timeoutID1;
 var timeoutID2;
+var infoElement;
+var errorElement;
 
+
+function clearMessage() {
+  if (infoElement) {
+    infoElement.innerHTML = '';
+    infoElement.className = '';
+    infoElement = null;
+  }
+  if (errorElement) {
+    errorElement.innerHTML = '';
+    errorElement.className = '';
+    errorElement = null;
+  }
+}
 
 /**
  * Prints the given error message.
@@ -11,10 +26,7 @@ function error(msg) {
   element.innerHTML = msg;
   element.className = 'error';
   document.getElementById('msg').appendChild(element);
-  window.setTimeout(function() {
-    element.innerHTML = '';
-    element.className = '';
-  }, 4000);
+  errorElement = element;
 }
 
 /**
@@ -26,10 +38,7 @@ function info(msg) {
   element.innerHTML = msg;
   element.className = 'info';
   document.getElementById('msg').appendChild(element);
-  window.setTimeout(function() {
-    element.innerHTML = '';
-    element.className = '';
-  }, 4000);
+  infoElement = element;
 }
 
 /**
@@ -60,7 +69,7 @@ function toDictionary(addr) {  // eslint-disable-line no-unused-vars
 
 function showResp(resp) {  // eslint-disable-line no-unused-vars
   if (resp.toJSON) {
-    info(JSON.stringify(resp, undefined, 2));
+    error('[Payment Response] = ' + JSON.stringify(resp, undefined, 2));
     return;
   }
 
@@ -83,7 +92,7 @@ function showResp(resp) {  // eslint-disable-line no-unused-vars
   let name = resp.payerName ? 'name: ' + resp.payerName + '<br/>' : '';
 
 
-  info(email + phone + name + shippingOption + shippingAddress + method +
+  error(email + phone + name + shippingOption + shippingAddress + method +
       instrument);
 }
 

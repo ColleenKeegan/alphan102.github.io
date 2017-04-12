@@ -63,6 +63,8 @@ function preSetting() {
     change.innerHTML = 'Round' + next;
   }
 
+  clearMessage();
+
   switch (Round) {
     case 1:
       supportedInstruments = [{}];
@@ -144,7 +146,7 @@ function buildPaymentRequest() {
   try {
     request = new PaymentRequest(supportedInstruments, details);
   } catch (e) {
-    info('Round ' + Round + ': PaymentRequest cann\'t be generated.');
+    info('Round ' + Round + ': PaymentRequest can\'t be generated.');
     error(' Reason: \'' + e + '\'');
     Round++;
   }
@@ -164,9 +166,9 @@ function onBuyClicked() {
   try {
     if (Round == 4) {
       request.abort().then(function() {
-        info("Abort successfully");
+        info(" Result : Abort successfully");
       }).catch(function(err) {
-        error("Abort failed due to" + err);
+        error(" Result : Abort failed due to" + err);
       });
       Round++;
       return;
@@ -175,7 +177,7 @@ function onBuyClicked() {
     if (Round == 5) {
       if (request.canMakePayment) {
         request.canMakePayment().then(function(result) {
-          error(result ? "Result: Can make payment" : "Result: Cannot make payment");
+          error(result ? " Result: Can make payment" : "Result: Cannot make payment");
         }).catch(function(err) {
           error(err);
         });
@@ -189,7 +191,6 @@ function onBuyClicked() {
         window.setTimeout(function() {
           instrumentResponse.complete('success')
             .then(function() {
-              error("[Payment Response]----");
               showResp(instrumentResponse);
               Round++;
               return;
